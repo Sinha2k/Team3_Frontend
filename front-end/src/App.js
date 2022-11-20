@@ -11,6 +11,8 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import FooterIKEA from "./view/FooterFurnituno";
 import ProductsPage from "./view/Products";
+import Dashboard from "./view/Admin/Dashboard";
+import AdminLayout from "./component/Admin/Layout";
 
 function App() {
   return (
@@ -47,6 +49,9 @@ function App() {
             </div>
           }
         />
+        <Route path="/admin/" element={<AdminLayout />}>
+          <Route path="dashboard" element={<Dashboard />} />
+        </Route>
       </Routes>
     </Router>
   );
