@@ -55,7 +55,7 @@ const HomepageFurnituno = () => {
 
   const [slideInsta, setSlideInsta] = useState();
 
-  const [roomFilter, setRoomFilter] = useState("All");
+  const [roomFilter, setRoomFilter] = useState("Tất cả");
 
   const [loading, setLoading] = useState(false);
 

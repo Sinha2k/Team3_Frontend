@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import cart from "../../../assets/svgIcons/cart.svg";
 import heart from "../../../assets/svgIcons/heart.svg";
+import Rating from "../Rating";
 
 const CardStyle = styled.div`
   a {
@@ -129,6 +130,12 @@ const ProductCard = ({ product }) => {
               <span>{Math.floor(product.price)}</span>
               <span>
                 .{product.price * 100 - Math.floor(product.price) * 100}
+              </span>
+            </div>
+            <div style={{ display: "flex", marginBottom: "5px" }}>
+              <Rating value={product.rating} />
+              <span style={{ marginLeft: "10px" }}>
+                ({product.numOfReviews})
               </span>
             </div>
           </div>

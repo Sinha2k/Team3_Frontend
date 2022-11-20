@@ -100,15 +100,19 @@ const NavbarFurnituno = () => {
                   </span>
                 </li>
                 <li>
-                  <span>
-                    <img alt="" src={heart} />
-                  </span>
+                  <a href="/furnituno/wish-list">
+                    <span>
+                      <img alt="" src={heart} />
+                    </span>
+                  </a>
                 </li>
                 <li>
-                  <span>
-                    <img alt="" src={shopping_bag} />
-                    <span>0</span>
-                  </span>
+                  <a href="/furnituno/cart">
+                    <span>
+                      <img alt="" src={shopping_bag} />
+                      <span>0</span>
+                    </span>
+                  </a>
                 </li>
               </ul>
             </div>

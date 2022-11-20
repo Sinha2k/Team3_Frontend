@@ -7,11 +7,11 @@ import Sort from "../../component/Filter/Sort";
 import Size from "../../component/Filter/Size";
 import Color from "../../component/Filter/Color";
 import Price from "../../component/Filter/Price";
+import ProductCard from "../../component/util/ProductCard";
+import Loading from "../../component/Loading";
 
 import Tippy from "@tippyjs/react/headless";
 import { CloseOutlined, DownOutlined } from "@ant-design/icons";
-import ProductCard from "../../component/util/ProductCard";
-import Loading from "../../component/Loading";
 
 const ProductsPage = () => {
   const [active, setActive] = useState("product");
