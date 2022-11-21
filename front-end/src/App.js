@@ -12,7 +12,6 @@ import ProductDetail from "./view/ProductDetail";
 
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import ProductsPage from "./view/Products";
 import Dashboard from "./view/Admin/Dashboard";
 import AdminLayout from "./component/Admin/Layout";
 import CartPage from "./view/Cart";
