@@ -6,14 +6,27 @@ import Footer from "./view/Footer/Footer";
 import NavbarIKEA from "./view/NavbarFurnituno";
 import HomepageIKEA from "./view/HomepageFurnituno";
 import Banner from "./view/Banner/Banner";
+import Login from "./view/Login/Login";
+
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import Register from "./view/Register/Register";
+import AcountInfor from "./view/UserAcount/AcountInfor";
+import Address from "./view/UserAcount/Address";
+import ManageOrder from "./view/UserAcount/ManageOrder";
+import Warranty from "./view/Warranty/Warranty";
+import Favorite from "./view/Favorite/Favorite";
 import FooterIKEA from "./view/FooterFurnituno";
 import ProductsPage from "./view/Products";
 import ProductDetail from "./view/ProductDetail";
 
+<<<<<<< HEAD
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Dashboard from "./view/Admin/Dashboard";
 import AdminLayout from "./component/Admin/Layout";
+=======
+>>>>>>> ac74194168661c72cc52cf31c66895e67358a0d3
 import CartPage from "./view/Cart";
 import Wishlist from "./view/Wishlist";
 
@@ -82,6 +95,67 @@ function App() {
               <NavbarIKEA />
               <Wishlist />
               <FooterIKEA />
+            </div>
+          }
+        />
+        <Route
+          path="/login"
+          element={
+            <div className="App">
+              <Login />
+            </div>
+          }
+        />
+        <Route
+          path="/register"
+          element={
+            <div className="App">
+              <Register />
+            </div>
+          }
+        />
+        <Route
+          path="/acount-infor"
+          element={
+            <div className="App">
+              <NavbarIKEA />
+              <AcountInfor />
+            </div>
+          }
+        />
+        <Route
+          path="/address"
+          element={
+            <div className="App">
+              <NavbarIKEA />
+              <Address />
+            </div>
+          }
+        />
+        <Route
+          path="/manageOrder"
+          element={
+            <div className="App">
+              <NavbarIKEA />
+              <ManageOrder />
+            </div>
+          }
+        />
+        <Route
+          path="/warranty"
+          element={
+            <div className="App">
+              <NavbarIKEA />
+              <Warranty />
+            </div>
+          }
+        />
+        <Route
+          path="/favorite"
+          element={
+            <div className="App">
+              <NavbarIKEA />
+              <Favorite />
             </div>
           }
         />
