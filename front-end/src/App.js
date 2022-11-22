@@ -28,6 +28,7 @@ import AdminLayout from "./component/Admin/Layout";
 import CartPage from "./view/Cart";
 import Wishlist from "./view/Wishlist";
 import store from "./redux-toolkit/store";
+import OrderList from "./view/Admin/Order";
 
 function App() {
   return (
@@ -156,8 +157,9 @@ function App() {
               </div>
             }
           />
-          <Route path="/admin/" element={<AdminLayout />}>
+          <Route path="/admin/*" element={<AdminLayout />}>
             <Route path="dashboard" element={<Dashboard />} />
+            <Route path="order" element={<OrderList />} />
           </Route>
         </Routes>
       </Router>
