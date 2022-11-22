@@ -1,5 +1,6 @@
 import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Provider } from "react-redux";
 import Homepage from "./view/Homepage/Homepage";
 import Navbar from "./view/Navbar/Navbar";
 import Footer from "./view/Footer/Footer";
@@ -22,135 +23,138 @@ import ProductDetail from "./view/ProductDetail";
 
 import CartPage from "./view/Cart";
 import Wishlist from "./view/Wishlist";
+import store from "./redux-toolkit/store";
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <div className="App">
-              <Navbar />
-              <Homepage />
-              <Footer />
-            </div>
-          }
-        />
-        <Route
-          path="/furnituno"
-          element={
-            <div className="App">
-              <NavbarIKEA />
-              <Banner />
-              <HomepageIKEA />
-              <FooterIKEA />
-            </div>
-          }
-        />
-        <Route
-          path="/furnituno/all-products"
-          element={
-            <div className="App">
-              <NavbarIKEA />
-              <ProductsPage />
-              <FooterIKEA />
-            </div>
-          }
-        />
-        <Route
-          path="/furnituno/product/:id"
-          element={
-            <div className="App">
-              <NavbarIKEA />
-              <ProductDetail />
-              <FooterIKEA />
-            </div>
-          }
-        />
-        <Route
-          path="/furnituno/cart"
-          element={
-            <div className="App">
-              <NavbarIKEA />
-              <CartPage />
-              <FooterIKEA />
-            </div>
-          }
-        />
-        <Route
-          path="/furnituno/wish-list"
-          element={
-            <div className="App">
-              <NavbarIKEA />
-              <Wishlist />
-              <FooterIKEA />
-            </div>
-          }
-        />
-        <Route
-          path="/login"
-          element={
-            <div className="App">
-              <Login />
-            </div>
-          }
-        />
-        <Route
-          path="/register"
-          element={
-            <div className="App">
-              <Register />
-            </div>
-          }
-        />
-        <Route
-          path="/acount-infor"
-          element={
-            <div className="App">
-              <NavbarIKEA />
-              <AcountInfor />
-            </div>
-          }
-        />
-        <Route
-          path="/address"
-          element={
-            <div className="App">
-              <NavbarIKEA />
-              <Address />
-            </div>
-          }
-        />
-        <Route
-          path="/manageOrder"
-          element={
-            <div className="App">
-              <NavbarIKEA />
-              <ManageOrder />
-            </div>
-          }
-        />
-        <Route
-          path="/warranty"
-          element={
-            <div className="App">
-              <NavbarIKEA />
-              <Warranty />
-            </div>
-          }
-        />
-        <Route
-          path="/favorite"
-          element={
-            <div className="App">
-              <NavbarIKEA />
-              <Favorite />
-            </div>
-          }
-        />
-      </Routes>
-    </Router>
+    <Provider store={store}>
+      <Router>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <div className="App">
+                <Navbar />
+                <Homepage />
+                <Footer />
+              </div>
+            }
+          />
+          <Route
+            path="/furnituno"
+            element={
+              <div className="App">
+                <NavbarIKEA />
+                <Banner />
+                <HomepageIKEA />
+                <FooterIKEA />
+              </div>
+            }
+          />
+          <Route
+            path="/furnituno/all-products"
+            element={
+              <div className="App">
+                <NavbarIKEA />
+                <ProductsPage />
+                <FooterIKEA />
+              </div>
+            }
+          />
+          <Route
+            path="/furnituno/product/:id"
+            element={
+              <div className="App">
+                <NavbarIKEA />
+                <ProductDetail />
+                <FooterIKEA />
+              </div>
+            }
+          />
+          <Route
+            path="/furnituno/cart"
+            element={
+              <div className="App">
+                <NavbarIKEA />
+                <CartPage />
+                <FooterIKEA />
+              </div>
+            }
+          />
+          <Route
+            path="/furnituno/wish-list"
+            element={
+              <div className="App">
+                <NavbarIKEA />
+                <Wishlist />
+                <FooterIKEA />
+              </div>
+            }
+          />
+          <Route
+            path="/login"
+            element={
+              <div className="App">
+                <Login />
+              </div>
+            }
+          />
+          <Route
+            path="/register"
+            element={
+              <div className="App">
+                <Register />
+              </div>
+            }
+          />
+          <Route
+            path="/acount-infor"
+            element={
+              <div className="App">
+                <NavbarIKEA />
+                <AcountInfor />
+              </div>
+            }
+          />
+          <Route
+            path="/address"
+            element={
+              <div className="App">
+                <NavbarIKEA />
+                <Address />
+              </div>
+            }
+          />
+          <Route
+            path="/manageOrder"
+            element={
+              <div className="App">
+                <NavbarIKEA />
+                <ManageOrder />
+              </div>
+            }
+          />
+          <Route
+            path="/warranty"
+            element={
+              <div className="App">
+                <NavbarIKEA />
+                <Warranty />
+              </div>
+            }
+          />
+          <Route
+            path="/favorite"
+            element={
+              <div className="App">
+                <NavbarIKEA />
+                <Favorite />
+              </div>
+            }
+          />
+        </Routes>
+      </Router>
+    </Provider>
   );
 }
 
