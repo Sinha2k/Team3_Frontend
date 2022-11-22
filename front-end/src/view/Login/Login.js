@@ -4,17 +4,16 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import LoginStyle from "../../styled/Login";
 import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import {
   ArrowLeftOutlined,
   ExclamationCircleOutlined,
   EyeInvisibleOutlined,
   EyeOutlined,
 } from "@ant-design/icons";
+import { login } from "../../redux-toolkit/reducer/userSliceReducer";
 const schema = yup.object().shape({
-  email: yup
-    .string()
-    .email(" Định dạng email chưa đúng")
-    .required(" Vui lòng điền email !"),
+  username: yup.string().required(" Vui lòng điền username !"),
   password: yup
     .string()
     .required(" Vui lòng nhập mật khẩu !")
@@ -23,6 +22,9 @@ const schema = yup.object().shape({
 });
 function Login() {
   const [hidePass, setHidePass] = useState(true);
+
+  const dispatch = useDispatch();
+
   const {
     register,
     handleSubmit,
@@ -31,7 +33,7 @@ function Login() {
     resolver: yupResolver(schema),
   });
   const submitForm = (data) => {
-    console.log(data);
+    dispatch(login(data));
   };
   return (
     <LoginStyle>
@@ -65,20 +67,20 @@ function Login() {
         <form onSubmit={handleSubmit(submitForm)} className={"form"}>
           <label>E-mail</label>
           <input
-            type={"email"}
-            name={"email"}
+            type={"text"}
+            name={"username"}
             className={
-              errors.email?.type !== undefined ? "email-false" : "email-true"
+              errors.username?.type !== undefined ? "email-false" : "email-true"
             }
-            {...register("email", { required: true })}
+            {...register("username", { required: true })}
           />
-          {errors.email?.type !== undefined && (
+          {errors.username?.type !== undefined && (
             <p className="warning">
               <ExclamationCircleOutlined />
-              {errors.email?.message}
+              {errors.username?.message}
             </p>
           )}
-          {console.log(errors.email?.message, errors.email?.type)}
+          {/* {console.log(errors.email?.message, errors.email?.type)} */}
           <label>Password</label>
           <div className="pass">
             <input
@@ -100,7 +102,7 @@ function Login() {
           )}
           <Link to={"#"}>Bạn quên mật khẩu ?</Link>
           <div style={{ display: "flex", marginLeft: "-1%", marginTop: "5%" }}>
-            <input type={"checkbox"} />
+            <input {...register("remember")} type={"checkbox"} />
             <span style={{ marginTop: "2.5%", marginLeft: "2%" }}>
               Ghi nhớ đăng nhập
             </span>
