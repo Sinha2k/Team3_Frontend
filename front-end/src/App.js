@@ -20,13 +20,10 @@ import FooterIKEA from "./view/FooterFurnituno";
 import ProductsPage from "./view/Products";
 import ProductDetail from "./view/ProductDetail";
 
-<<<<<<< HEAD
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Dashboard from "./view/Admin/Dashboard";
 import AdminLayout from "./component/Admin/Layout";
-=======
->>>>>>> ac74194168661c72cc52cf31c66895e67358a0d3
 import CartPage from "./view/Cart";
 import Wishlist from "./view/Wishlist";
 
