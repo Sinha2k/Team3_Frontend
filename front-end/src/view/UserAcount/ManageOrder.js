@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "antd/dist/antd.css";
+import "antd/dist/antd.min.css";
 import ManageOrderStyle from "../../styled/ManageAcount/ManageOrder";
 import NavManageAcount from "../../component/NavManageAcount/NavManageAcount";
 import UserAcountInfor from "../../data/UserAcountInfor";

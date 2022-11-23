@@ -21,9 +21,14 @@ import FooterIKEA from "./view/FooterFurnituno";
 import ProductsPage from "./view/Products";
 import ProductDetail from "./view/ProductDetail";
 
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import Dashboard from "./view/Admin/Dashboard";
+import AdminLayout from "./component/Admin/Layout";
 import CartPage from "./view/Cart";
 import Wishlist from "./view/Wishlist";
 import store from "./redux-toolkit/store";
+import OrderList from "./view/Admin/Order";
 
 function App() {
   return (
@@ -152,6 +157,10 @@ function App() {
               </div>
             }
           />
+          <Route path="/admin/*" element={<AdminLayout />}>
+            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="order" element={<OrderList />} />
+          </Route>
         </Routes>
       </Router>
     </Provider>
