@@ -3,6 +3,12 @@ import styled from "styled-components";
 const Products = styled.div`
   margin-left: 110px;
   margin-right: 40px;
+  .loading-page {
+    height: 70vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
   .products-page-title {
     margin: 1.875rem 0;
     h1 {
