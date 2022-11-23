@@ -10,9 +10,10 @@ import {
 import Slider from "react-slick";
 import Tippy from "@tippyjs/react/headless";
 import moment from "moment";
+import { useSelector, useDispatch } from "react-redux";
 
 import ProductDetailStyle from "../../styled/ProductDetail";
-import productsList from "../../data/Products";
+// import productsList from "../../data/Products";
 import Rating from "../../component/util/Rating";
 import infor from "../../assets/svgIcons/infor.svg";
 import truck from "../../assets/svgIcons/truck.svg";
@@ -25,6 +26,10 @@ import Sort from "../../component/Filter/Sort";
 import Reviews from "../../data/Reviews";
 import Review from "../../component/Review";
 import Loading from "../../component/Loading";
+import {
+  getAllProduct,
+  getProductById,
+} from "../../redux-toolkit/reducer/productSliceReducer";
 
 const ProductDetail = () => {
   const [detailProduct, setDetailProduct] = useState();
@@ -38,6 +43,11 @@ const ProductDetail = () => {
   const [key, setKey] = useState("");
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+
+  const product = useSelector((state) => state.product.product);
+  const productsList = useSelector((state) => state.product.productList);
+  const loadingPage = useSelector((state) => state.product.status);
+  const dispatch = useDispatch();
 
   const params = useParams();
 
@@ -53,7 +63,6 @@ const ProductDetail = () => {
     switch (key) {
       case "color":
       case "size":
-      case "material":
         return (
           <div className="product-variation">
             <h2>Choose {key}</h2>
@@ -62,36 +71,62 @@ const ProductDetail = () => {
                 ? detailProduct[key].map((item) => (
                     <div
                       style={
-                        colorChoose === item.name
+                        colorChoose === item.color
                           ? {
                               borderColor: "#111",
                               justifyContent: "flex-start",
+                              position: "relative",
                             }
-                          : { justifyContent: "flex-start" }
+                          : {
+                              justifyContent: "flex-start",
+                              position: "relative",
+                            }
                       }
-                      onClick={() => setColorChoose(item.name)}
+                      onClick={() => setColorChoose(item.color)}
                       className="variation-item"
                     >
                       <img alt="" src={item.image} />
-                      <span style={{ marginLeft: "20px" }}>{item.name}</span>
+                      <span style={{ marginLeft: "20px" }}>{item.color}</span>
+                      <span
+                        style={{
+                          fontWeight: "400",
+                          right: "1rem",
+                          position: "absolute",
+                        }}
+                      >
+                        Còn{" "}
+                        {detailProduct?.stock
+                          ?.filter((st) => st.color === item.color)
+                          .reduce((prev, itm) => {
+                            return prev + itm.stock;
+                          }, 0)}
+                      </span>
                     </div>
                   ))
                 : detailProduct[key].map((item) => (
                     <div
                       style={
-                        materialChoose === item.name || sizeChoose === item.name
+                        materialChoose === item || sizeChoose === item
                           ? { borderColor: "#111" }
                           : {}
                       }
                       onClick={() =>
                         key === "size"
-                          ? setSizeChoose(item.name)
-                          : setMaterialChoose(item.name)
+                          ? setSizeChoose(item)
+                          : setMaterialChoose(item)
                       }
                       className="variation-item"
                     >
-                      <span>{item.name}</span>
-                      {item.subPrice > 0 && <span>+ $ {item.subPrice}</span>}
+                      <span>{item}</span>
+                      {/* {item.subPrice > 0 && <span>+ $ {item.subPrice}</span>} */}
+                      <span>
+                        Còn{" "}
+                        {detailProduct?.stock
+                          ?.filter((st) => st.size === item)
+                          .reduce((prev, itm) => {
+                            return prev + itm.stock;
+                          }, 0)}
+                      </span>
                     </div>
                   ))}
             </div>
@@ -213,212 +248,241 @@ const ProductDetail = () => {
 
   useEffect(() => {
     if (params) {
-      setDetailProduct(
-        productsList.find((item) => item.id.toString() === params.id)
-      );
+      // setDetailProduct(
+      //   productsList.find((item) => item.id.toString() === params.id)
+      // );
+      dispatch(getProductById(params.id));
     }
-  }, [params]);
+  }, [params, dispatch]);
 
   useEffect(() => {
-    if (detailProduct && detailProduct?.color.length > 0) {
-      setColorChoose(detailProduct?.color[0].name);
-      setMaterialChoose(detailProduct?.material[0].name);
-      setSizeChoose(detailProduct?.size[0].name);
+    if (product) {
+      setDetailProduct(product);
+      if (product?.size?.length > 0 && product?.color?.length > 0) {
+        setColorChoose(product?.color[0].color);
+        setMaterialChoose(product?.material);
+        setSizeChoose(product?.size[0]);
+      }
     }
-  }, [detailProduct]);
+  }, [product]);
+
+  useEffect(() => {
+    dispatch(getAllProduct());
+  }, [dispatch]);
 
   return (
     <ProductDetailStyle>
-      <div className="product-detail-container">
-        <div className="gallery-product-image">
-          <div className="gallery-body">
-            <img alt="" src={detailProduct?.attachment} />
-            {detailProduct?.gallery.map((item, index) => (
-              <img key={index} alt="" src={item} />
-            ))}
-          </div>
-          <button className="gallery-button">
-            <span>Xem thêm hình ảnh</span>
-          </button>
+      {loadingPage === "loading" ? (
+        <div className="loading-page">
+          <Loading width="20px" height="20px" background="#0058a3" />
         </div>
-        <div className="product-detail-content">
-          <div className="product-detail-information">
-            <div className="product-name-desc">
-              <h1>
-                <span>{detailProduct?.name}</span>
-                <span>{detailProduct?.description}</span>
-              </h1>
-            </div>
-            <div className="product-price">
-              <span>$</span>
-              <span>{Math.floor(detailProduct?.price)}</span>
-              <span>
-                .
-                {detailProduct?.price * 100 -
-                  Math.floor(detailProduct?.price) * 100}
-              </span>
-            </div>
-            <button onClick={() => handleOpenModal("Đánh giá")}>
-              <Rating value={detailProduct?.rating} />
-              <span>({detailProduct?.numOfReviews})</span>
-            </button>
-          </div>
-          <div className="financial-service">
-            <a href="/furnituno">
-              Kiếm 5% phần thưởng tại Furnituno bằng Thẻ tín dụng Furnituno
-              Visa. Chi tiết
-            </a>
-          </div>
-          <div className="sold-separately">
-            <img alt="" src={infor} />
-            <span>Không bao gồm các phụ kiện.</span>
-          </div>
-          <div className="picker-product-color">
-            <button onClick={() => handleOpenModal("color")}>
-              <span>
-                <span>Chọn màu</span>
-                <span>{colorChoose}</span>
-              </span>
-              <RightOutlined />
-            </button>
-            <div className="display-option-color">
-              {detailProduct?.color.map((item, index) => (
-                <img
-                  style={
-                    colorChoose === item.name ? { borderColor: "black" } : {}
-                  }
-                  key={index}
-                  onClick={() => setColorChoose(item.name)}
-                  alt=""
-                  src={item.image}
-                />
-              ))}
-            </div>
-          </div>
-          <div className="picker-product-color">
-            <button onClick={() => handleOpenModal("size")}>
-              <span>
-                <span>Chọn kích thước</span>
-                <span>{sizeChoose}</span>
-              </span>
-              <RightOutlined />
-            </button>
-          </div>
-          <div className="picker-product-color">
-            <button onClick={() => handleOpenModal("material")}>
-              <span>
-                <span>Chọn chất liêu</span>
-                <span>{materialChoose}</span>
-              </span>
-              <RightOutlined />
-            </button>
-          </div>
-          <div className="section-container-header">
-            <h2>Làm thế nào để nhận</h2>
-            <a href="/furnituno">Change store</a>
-          </div>
-          <div className="item-availability-group">
-            <div className="availability-item">
-              <img alt="" src={truck} />
-              <div>
-                <div>
-                  <strong>Vận chuyển</strong>
-                </div>
-                <span>
-                  <u>Nhập zip code của bạn để giao hàng</u>
-                </span>
+      ) : (
+        <>
+          <div className="product-detail-container">
+            <div className="gallery-product-image">
+              <div className="gallery-body">
+                <img alt="" src={detailProduct?.image} />
+                {detailProduct?.gallery?.map((item, index) => (
+                  <img key={index} alt="" src={item} />
+                ))}
               </div>
-            </div>
-            <div className="availability-item">
-              <img alt="" src={atlanta} />
-              <div>
-                <div>
-                  <strong>Lấy hàng</strong>
-                  <span></span>
-                </div>
-                <span>
-                  Lấy hàng tại <u>Hà Nội</u>
-                </span>
-              </div>
-            </div>
-            <div className="availability-item">
-              <img alt="" src={atlanta} />
-              <div>
-                <div>
-                  <strong>Cửa hàng</strong>
-                  <span></span>
-                </div>
-                <span>
-                  Còn hàng tại <u>Hà Nội</u>
-                </span>
-              </div>
-            </div>
-          </div>
-          <div className="product-detail-button">
-            <div className="add-to-bag">
-              <button onClick={() => addCartSubmit()}>
-                <span className="addCart-button">
-                  {!loading ? (
-                    !success ? (
-                      "Thêm vào giỏ hàng"
-                    ) : (
-                      <>
-                        <CheckOutlined />
-                        Thành công
-                      </>
-                    )
-                  ) : (
-                    <Loading width="7px" height="7px" background="#fff" />
-                  )}
-                </span>
+              <button className="gallery-button">
+                <span>Xem thêm hình ảnh</span>
               </button>
             </div>
-            <button className="add-to-wishlist">
-              <span>
-                <img alt="" src={heart} />
-              </span>
-            </button>
+            <div className="product-detail-content">
+              <div className="product-detail-information">
+                <div className="product-name-desc">
+                  <h1>
+                    <span>{detailProduct?.name}</span>
+                    <span>{detailProduct?.description}</span>
+                  </h1>
+                </div>
+                <div className="product-price">
+                  <span>$</span>
+                  <span>{Math.floor(detailProduct?.price)}</span>
+                  <span>
+                    .
+                    {detailProduct?.price * 100 -
+                      Math.floor(detailProduct?.price) * 100}
+                  </span>
+                </div>
+                <button onClick={() => handleOpenModal("Đánh giá")}>
+                  <Rating value={detailProduct?.rate} />
+                  <span>({detailProduct?.num_of_reviews})</span>
+                </button>
+              </div>
+              <div className="financial-service">
+                <a href="/furnituno">
+                  Kiếm 5% phần thưởng tại Furnituno bằng Thẻ tín dụng Furnituno
+                  Visa. Chi tiết
+                </a>
+              </div>
+              <div className="sold-separately">
+                <img alt="" src={infor} />
+                <span>Không bao gồm các phụ kiện.</span>
+              </div>
+              <div className="picker-product-color">
+                <button onClick={() => handleOpenModal("color")}>
+                  <span>
+                    <span>Chọn màu</span>
+                    <span>{colorChoose}</span>
+                  </span>
+                  <RightOutlined />
+                </button>
+                <div className="display-option-color">
+                  {detailProduct?.color?.map((item, index) => (
+                    <img
+                      style={
+                        colorChoose === item.color
+                          ? { borderColor: "black" }
+                          : {}
+                      }
+                      key={index}
+                      onClick={() => setColorChoose(item.color)}
+                      alt=""
+                      src={item.image}
+                    />
+                  ))}
+                </div>
+              </div>
+              <div className="picker-product-color">
+                <button onClick={() => handleOpenModal("size")}>
+                  <span>
+                    <span>Chọn kích thước</span>
+                    <span>{sizeChoose}</span>
+                  </span>
+                  <RightOutlined />
+                </button>
+              </div>
+              <div className="picker-product-color">
+                <button>
+                  <span>
+                    <span>Chọn chất liêu</span>
+                    <span>{materialChoose}</span>
+                  </span>
+                  <RightOutlined />
+                </button>
+              </div>
+              <div className="section-container-header">
+                <h2>Làm thế nào để nhận</h2>
+                <a href="/furnituno">Change store</a>
+              </div>
+              <div className="item-availability-group">
+                <div className="availability-item">
+                  <img alt="" src={truck} />
+                  <div>
+                    <div>
+                      <strong>Vận chuyển</strong>
+                    </div>
+                    <span>
+                      <u>Nhập zip code của bạn để giao hàng</u>
+                    </span>
+                  </div>
+                </div>
+                <div className="availability-item">
+                  <img alt="" src={atlanta} />
+                  <div>
+                    <div>
+                      <strong>Lấy hàng</strong>
+                      <span></span>
+                    </div>
+                    <span>
+                      Lấy hàng tại <u>Hà Nội</u>
+                    </span>
+                  </div>
+                </div>
+                <div className="availability-item">
+                  <img alt="" src={atlanta} />
+                  <div>
+                    <div>
+                      <strong>Cửa hàng</strong>
+                      <span></span>
+                    </div>
+                    <span>
+                      Còn hàng tại <u>Hà Nội</u>
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div className="product-detail-button">
+                <div className="add-to-bag">
+                  <button onClick={() => addCartSubmit()}>
+                    <span className="addCart-button">
+                      {!loading ? (
+                        !success ? (
+                          "Thêm vào giỏ hàng"
+                        ) : (
+                          <>
+                            <CheckOutlined />
+                            Thành công
+                          </>
+                        )
+                      ) : (
+                        <Loading width="7px" height="7px" background="#fff" />
+                      )}
+                    </span>
+                  </button>
+                </div>
+                <button className="add-to-wishlist">
+                  <span>
+                    <img alt="" src={heart} />
+                  </span>
+                </button>
+              </div>
+              <div className="total-affordability">
+                <h2>Lợi ích gia đình Furnituno</h2>
+                <ul>
+                  <li>
+                    <CheckOutlined />
+                    <span>Giao hàng chiết khấu cho các giao dịch</span>
+                  </li>
+                  <li>
+                    <CheckOutlined />
+                    <span>Giảm giá 5% tại cửa hàng</span>
+                  </li>
+                </ul>
+                <a href="/furnituno">Tìm hiểu thêm</a>
+              </div>
+            </div>
           </div>
-          <div className="total-affordability">
-            <h2>Lợi ích gia đình Furnituno</h2>
-            <ul>
-              <li>
-                <CheckOutlined />
-                <span>Giao hàng chiết khấu cho các giao dịch</span>
-              </li>
-              <li>
-                <CheckOutlined />
-                <span>Giảm giá 5% tại cửa hàng</span>
-              </li>
-            </ul>
-            <a href="/furnituno">Tìm hiểu thêm</a>
+          <div className="related-product">
+            <h2>Xem thêm các sản phẩm</h2>
+            {productsList?.length <= 4 ? (
+              <div className="products-list">
+                {productsList.map((item) => (
+                  <ProductCard product={item} />
+                ))}
+              </div>
+            ) : (
+              <>
+                {" "}
+                <Slider
+                  ref={(c) => setProductCard(c)}
+                  infinite={false}
+                  slidesToShow={4.3}
+                  slidesToScroll={3}
+                >
+                  {productsList.map((item) => (
+                    <ProductCard product={item} />
+                  ))}
+                </Slider>
+                <div className="btn-arrow">
+                  <LeftOutlined onClick={() => productCard.slickPrev()} />
+                  <RightOutlined onClick={() => productCard.slickNext()} />
+                </div>
+              </>
+            )}
           </div>
-        </div>
-      </div>
-      <div className="related-product">
-        <h2>Xem thêm các sản phẩm</h2>
-        <Slider
-          ref={(c) => setProductCard(c)}
-          infinite={false}
-          slidesToShow={4.3}
-          slidesToScroll={3}
-        >
-          {productsList.map((item) => (
-            <ProductCard product={item} />
-          ))}
-        </Slider>
-        <div className="btn-arrow">
-          <LeftOutlined onClick={() => productCard.slickPrev()} />
-          <RightOutlined onClick={() => productCard.slickNext()} />
-        </div>
-      </div>
-      <Modal
-        visible={visible}
-        setVisible={setVisible}
-        children={renderChildren()}
-        footer={key === "Đánh giá" && writeReview}
-        setWriteReview={setWriteReview}
-      />
+          <Modal
+            visible={visible}
+            setVisible={setVisible}
+            children={renderChildren()}
+            footer={key === "Đánh giá" && writeReview}
+            setWriteReview={setWriteReview}
+          />
+        </>
+      )}
     </ProductDetailStyle>
   );
 };

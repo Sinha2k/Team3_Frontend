@@ -27,6 +27,7 @@ import Dashboard from "./view/Admin/Dashboard";
 import AdminLayout from "./component/Admin/Layout";
 import CartPage from "./view/Cart";
 import Wishlist from "./view/Wishlist";
+import { configureAppStore } from "./redux-toolkit/configureStore";
 import store from "./redux-toolkit/store";
 import OrderList from "./view/Admin/Order";
 import ProductList from "./view/Admin/Product";
