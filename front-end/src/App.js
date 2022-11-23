@@ -31,6 +31,7 @@ import { configureAppStore } from "./redux-toolkit/configureStore";
 import store from "./redux-toolkit/store";
 import OrderList from "./view/Admin/Order";
 import ProductList from "./view/Admin/Product";
+import AddProduct from "./view/Admin/Product/AddProduct";
 
 function App() {
   return (
@@ -162,6 +163,7 @@ function App() {
           <Route path="/admin/*" element={<AdminLayout />}>
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="order" element={<OrderList />} />
+            <Route path="product/add" element={<AddProduct />} />
             <Route path="product" element={<ProductList />} />
           </Route>
         </Routes>
