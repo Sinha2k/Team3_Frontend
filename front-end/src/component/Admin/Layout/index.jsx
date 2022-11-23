@@ -10,10 +10,12 @@ import {
   MenuUnfoldOutlined,
 } from "@ant-design/icons";
 import { LayoutAdmin } from "./styled";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
+import { path } from "../../../routes/path";
 
 const { Header, Sider, Content } = Layout;
 const AdminLayout = () => {
+  const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
   return (
     <LayoutAdmin>
@@ -28,16 +30,19 @@ const AdminLayout = () => {
               key: "1",
               icon: <UserOutlined />,
               label: "Trang chủ",
+              onClick: () => navigate(path.dashboard),
             },
             {
               key: "3",
               icon: <UploadOutlined />,
               label: "Danh sách sản phẩm",
+              onClick: () => navigate(path.product),
             },
             {
               key: "2",
               icon: <VideoCameraOutlined />,
               label: "Danh sách đơn hàng",
+              onClick: () => navigate(path.order),
             },
           ]}
         />

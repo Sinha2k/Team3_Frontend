@@ -29,6 +29,7 @@ import CartPage from "./view/Cart";
 import Wishlist from "./view/Wishlist";
 import store from "./redux-toolkit/store";
 import OrderList from "./view/Admin/Order";
+import ProductList from "./view/Admin/Product";
 
 function App() {
   return (
@@ -160,6 +161,7 @@ function App() {
           <Route path="/admin/*" element={<AdminLayout />}>
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="order" element={<OrderList />} />
+            <Route path="product" element={<ProductList />} />
           </Route>
         </Routes>
       </Router>
