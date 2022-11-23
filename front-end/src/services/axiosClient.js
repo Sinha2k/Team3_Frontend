@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig, AxiosInstance } from "axios";
 import { path } from "../routes/path";
-import { LocalStorageService } from "../services/local-storage/";
+import LocalStorageService from "../services/local-storage/";
 
 const baseConfig = (baseURL, contentType = "application/json") => {
   return {
@@ -8,6 +8,7 @@ const baseConfig = (baseURL, contentType = "application/json") => {
     headers: {
       "Accept-Language": "en-US",
       "Content-Type": contentType,
+      "access-control-allow-origin": "*",
     },
   };
 };
@@ -29,7 +30,8 @@ const interceptAuth = (config) => {
   const instance = axios.create(config);
 
   instance.interceptors.request.use((cf) => {
-    const token = LocalStorageService.get(LocalStorageService.OAUTH_TOKEN);
+    const token =
+      "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJoYXJpdGgiLCJpYXQiOjE2Njc4MTM2MzAsImV4cCI6MjY2ODQxODQzMH0.LSK9Z3xiExfc_h7dE8moH3xNAIoGtUaz0EraqZFL3eEVIt8O_3ev1z1_qeiv81eQR5JqtH7z54u1NjaTM6OCLA";
     if (token && cf?.headers) {
       cf.headers["Authorization"] = "Bearer " + token;
     }
