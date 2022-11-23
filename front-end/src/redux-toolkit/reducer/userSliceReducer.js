@@ -5,7 +5,6 @@ const userSliceReducer = createSlice({
   name: "users",
   initialState: {
     user: {},
-    id: 0,
     token: "",
     status: "idle",
     isLogin: false,
@@ -28,6 +27,8 @@ const userSliceReducer = createSlice({
   },
 });
 
+export default userSliceReducer.reducer;
+
 export const login = createAsyncThunk("users/login", async (user) => {
   try {
     const res = await axios.post("/users/login", {
@@ -43,4 +44,4 @@ export const login = createAsyncThunk("users/login", async (user) => {
   }
 });
 
-export default userSliceReducer;
+// export const getUser = createAsyncThunk("users/getUser", async ())

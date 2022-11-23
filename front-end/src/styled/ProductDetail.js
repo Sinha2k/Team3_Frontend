@@ -4,6 +4,12 @@ const ProductDetail = styled.div`
   margin-left: 110px;
   margin-right: 40px;
   margin-top: 6rem;
+  .loading-page {
+    height: 70vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
   .product-detail-container {
     display: grid;
     grid-template-columns: repeat(12, minmax(0, 1fr));
@@ -378,6 +384,12 @@ const ProductDetail = styled.div`
     margin-top: 6rem;
     position: relative;
     width: 100%;
+    .products-list {
+      display: grid;
+      width: 100%;
+      grid-template-columns: repeat(4, 276px);
+      grid-column-gap: 10px;
+    }
     h2 {
       font-size: 1.5rem;
       line-height: 1.45;

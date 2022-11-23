@@ -10,7 +10,7 @@ const RatingStyle = styled.div`
       color: #111;
     }
     .fa-star-o {
-      color: #fff;
+      color: gray;
     }
   }
 `;

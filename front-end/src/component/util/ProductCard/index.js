@@ -116,14 +116,14 @@ const CardStyle = styled.div`
 const ProductCard = ({ product }) => {
   return (
     <CardStyle>
-      <a href={`/furnituno/product/${product.id}`}>
+      <a href={`/furnituno/product/${product.productId}`}>
         <div className="product-card">
           <div className="product-card-attachment">
-            <img alt="" src={product.attachment} />
+            <img alt="" src={product.image} />
           </div>
           <div className="product-card-body">
             <span className="highlight">New</span>
-            <h3>{product.name}</h3>
+            <h3>{product.nameProduct}</h3>
             <span>{product.description}</span>
             <div className="product-price">
               <span>$</span>
@@ -133,7 +133,7 @@ const ProductCard = ({ product }) => {
               </span>
             </div>
             <div style={{ display: "flex", marginBottom: "5px" }}>
-              <Rating value={product.rating} />
+              <Rating value={product.rate} />
               <span style={{ marginLeft: "10px" }}>
                 ({product.numOfReviews})
               </span>
