@@ -8,17 +8,27 @@ import {
   UploadOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
+  DashboardOutlined,
+  ShoppingOutlined,
+  ShoppingCartOutlined,
 } from "@ant-design/icons";
 import { LayoutAdmin } from "./styled";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
+import { path } from "../../../routes/path";
+import logo from "../../../assets/images/logo-2.png";
 
 const { Header, Sider, Content } = Layout;
 const AdminLayout = () => {
+  const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
   return (
     <LayoutAdmin>
       <Sider trigger={null} collapsible collapsed={collapsed}>
-        <div className="logo" />
+        <div className="logo">
+          <a href="/">
+            <img src={logo} alt="" style={{ width: "100%" }} />
+          </a>
+        </div>
         <Menu
           theme="dark"
           mode="inline"
@@ -26,18 +36,21 @@ const AdminLayout = () => {
           items={[
             {
               key: "1",
-              icon: <UserOutlined />,
+              icon: <DashboardOutlined />,
               label: "Trang chủ",
+              onClick: () => navigate(path.dashboard),
             },
             {
               key: "3",
-              icon: <UploadOutlined />,
+              icon: <ShoppingOutlined />,
               label: "Danh sách sản phẩm",
+              onClick: () => navigate(path.product),
             },
             {
               key: "2",
-              icon: <VideoCameraOutlined />,
+              icon: <ShoppingCartOutlined />,
               label: "Danh sách đơn hàng",
+              onClick: () => navigate(path.order),
             },
           ]}
         />
