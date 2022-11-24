@@ -1,8 +1,11 @@
 import { PlusOutlined } from "@ant-design/icons";
-import { Button, Divider, Form, Input, Typography, Upload } from "antd";
+import { Button, Divider, Form, Input, Space, Typography, Upload } from "antd";
 import TextArea from "antd/lib/input/TextArea";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
+import * as yup from "yup";
+
+const schema = yup.object().shape({});
 
 const AddProduct = () => {
   const { control, handleSubmit } = useForm();
@@ -13,7 +16,7 @@ const AddProduct = () => {
 
   return (
     <div>
-      <Typography.Title>Thêm sản phẩm</Typography.Title>
+      <Typography.Title>Sửa sản phẩm</Typography.Title>
       <Divider />
       <Form
         labelCol={{
@@ -38,7 +41,6 @@ const AddProduct = () => {
                 name="avatar"
                 listType="picture-card"
                 className="avatar-uploader"
-                showUploadList={false}
               >
                 <div>
                   <PlusOutlined />
@@ -85,17 +87,19 @@ const AddProduct = () => {
           <TextArea rows={4} />
         </Form.Item>
         <Form.Item label="">
-          <Button
-            type="primary"
-            htmlType="submit"
-            onClick={handleSubmit(onSubmit)}
-          >
-            Thêm
-          </Button>
-          <Button htmlType="button">Reset</Button>
-          <Button type="link" htmlType="button">
-            Hủy
-          </Button>
+          <Space>
+            <Button
+              type="primary"
+              htmlType="submit"
+              onClick={handleSubmit(onSubmit)}
+            >
+              Thêm
+            </Button>
+            <Button htmlType="button">Reset</Button>
+            <Button type="link" htmlType="button">
+              Hủy
+            </Button>
+          </Space>
         </Form.Item>
       </Form>
     </div>
