@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import NavbarFurnitunoStyle from "../../styled/NavbarFurnituno";
 import truck from "../../assets/svgIcons/truck.svg";
 import shopping_bag from "../../assets/svgIcons/shopping_bag.svg";
@@ -6,16 +7,21 @@ import heart from "../../assets/svgIcons/heart.svg";
 import zip_code from "../../assets/svgIcons/zip-code.svg";
 import atlanta from "../../assets/svgIcons/atlanta.svg";
 import logo from "../../assets/images/logo.png";
+import { Wrapper as PopperWrapper } from "../../component/util/Popper/index";
 
 import {
   CameraOutlined,
   CloseOutlined,
   GlobalOutlined,
+  LoadingOutlined,
   MenuOutlined,
   RightOutlined,
   SearchOutlined,
   UserOutlined,
 } from "@ant-design/icons";
+import { getAllCart } from "../../redux-toolkit/reducer/cartSliceReducer";
+import Tippy from "@tippyjs/react/headless";
+import { searchProduct } from "../../redux-toolkit/reducer/productSliceReducer";
 
 const NavbarFurnituno = () => {
   const [appear, setAppear] = useState(false);
@@ -24,7 +30,26 @@ const NavbarFurnituno = () => {
 
   const [sliderBar, setSliderBar] = useState(false);
 
+  const [keyword, setKeyword] = useState("");
+
   const [y, setY] = useState(window.scrollY);
+
+  const numOfProduct = useSelector((state) => state.cart.numOfProduct);
+  const productListSearch = useSelector(
+    (state) => state.product.productListSearch
+  );
+  const loadingSearch = useSelector((state) => state.product.statusSearch);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getAllCart());
+  }, [dispatch]);
+
+  // useEffect(() => {
+  //   if (keyword) {
+  //     dispatch(searchProduct(keyword));
+  //   }
+  // }, [keyword, dispatch]);
 
   const appearNavbar = (e) => {
     if (window.scrollY > 500) {
@@ -43,6 +68,27 @@ const NavbarFurnituno = () => {
   };
 
   window.addEventListener("scroll", (e) => appearNavbar(e));
+
+  const handleOnChangeSearch = (e) => {
+    setKeyword(e.target.value);
+  };
+
+  const token =
+    "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY2OTM1NDAxOSwiZXhwIjo5NjY5MzU1ODE5fQ.Yzmfh6R2sJT0idfd75ok-lvxLVgvTLNxVnjF5e07xVq8VLBoFXj6Uvo35IJFB40BnSxQzZPzlIm7ylWFjsCZbQ";
+
+  useEffect(() => {
+    localStorage.setItem("token", token);
+  });
+
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      if (keyword) {
+        dispatch(searchProduct(keyword));
+      }
+    }, 1500);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [keyword, dispatch]);
 
   return (
     <NavbarFurnitunoStyle>
@@ -77,15 +123,64 @@ const NavbarFurnituno = () => {
                 </a>
               </div>
               <div className="header-search">
-                <div className="search-field">
-                  <span style={{ left: "30px" }}>
-                    <SearchOutlined />
-                  </span>
-                  <input placeholder="Bạn đang cần tìm gì?" />
-                  <span style={{ right: "40px" }}>
-                    <CameraOutlined />
-                  </span>
-                </div>
+                <Tippy
+                  visible={keyword ? true : false}
+                  interactive={true}
+                  offset={[0, 8]}
+                  placement="bottom"
+                  render={(attrs) => {
+                    return (
+                      <div
+                        className="search-list"
+                        style={{ width: "570px" }}
+                        {...attrs}
+                      >
+                        <PopperWrapper style={{ padding: "0" }}>
+                          {productListSearch?.length > 0 ? (
+                            productListSearch?.map((item) => (
+                              <a href={`/furnituno/product/${item.productId}`}>
+                                <div className="search-card">
+                                  <span key={item.productId}>
+                                    {item.nameProduct}
+                                  </span>
+                                  <img alt="" src={item.image} />
+                                </div>
+                              </a>
+                            ))
+                          ) : (
+                            <div
+                              style={{
+                                cursor: "default",
+                                padding: "10px 20px",
+                              }}
+                              className="search-card"
+                            >
+                              <span>Không tìm thấy kết quả phù hợp</span>
+                            </div>
+                          )}
+                        </PopperWrapper>
+                      </div>
+                    );
+                  }}
+                >
+                  <div className="search-field">
+                    <span style={{ left: "30px" }}>
+                      <SearchOutlined />
+                    </span>
+                    <input
+                      onChange={handleOnChangeSearch}
+                      placeholder="Bạn đang cần tìm gì?"
+                    />
+                    {loadingSearch === "loading" && (
+                      <span style={{ right: "70px" }}>
+                        <LoadingOutlined />
+                      </span>
+                    )}
+                    <span style={{ right: "40px" }}>
+                      <CameraOutlined />
+                    </span>
+                  </div>
+                </Tippy>
               </div>
               <ul className="header-icons">
                 <li onClick={() => setSliderBar(true)}>
@@ -110,7 +205,7 @@ const NavbarFurnituno = () => {
                   <a href="/furnituno/cart">
                     <span>
                       <img alt="" src={shopping_bag} />
-                      <span>0</span>
+                      <span>{numOfProduct}</span>
                     </span>
                   </a>
                 </li>

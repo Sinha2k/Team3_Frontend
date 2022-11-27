@@ -389,6 +389,7 @@ const Homepage = styled.div`
           font-weight: 700;
           padding: 0 1.5rem;
           background: #fff;
+          border: 1px solid #dfdfdf;
           border-radius: 64px;
           position: absolute;
           bottom: 40px;

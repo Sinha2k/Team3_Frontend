@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import productsList from "../../data/Products";
 import HomepageStyle from "../../styled/HomepageFurnituno";
 import HoverCard from "../../component/util/HoverCard/HoverCard";
-import categories from "../../data/Categories";
+// import categories from "../../data/Categories";
 import PopularCategories from "../../data/PopularCategories";
 import Rooms from "../../data/Rooms";
 import delivery from "../../assets/svgIcons/delivery.svg";
@@ -14,6 +14,8 @@ import Loading from "../../component/Loading";
 import Tippy from "@tippyjs/react/headless";
 import Slider from "react-slick";
 import { HeartOutlined, LeftOutlined, RightOutlined } from "@ant-design/icons";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllCategory } from "../../redux-toolkit/reducer/categorySliceReducer";
 
 const HomepageFurnituno = () => {
   const settings = {
@@ -92,6 +94,13 @@ const HomepageFurnituno = () => {
       setLoading(false);
     }, 2000);
   };
+
+  const categories = useSelector((state) => state.category.categorytList);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getAllCategory());
+  }, [dispatch]);
 
   return (
     <HomepageStyle>
@@ -198,10 +207,10 @@ const HomepageFurnituno = () => {
       <div className="carousel">
         <Slider ref={(c) => setSlide(c)} {...settings}>
           {categories.map((item) => (
-            <div>
-              <a href={`/ikea/categories/${item.name}`}>
-                <img alt="" src={item.attachment} />
-                <span>{item.name}</span>
+            <div key={item.categoryId}>
+              <a href={`/ikea/categories/${item.categoryName}`}>
+                <img alt="" src={item.descriptionName} />
+                <span>{item.categoryName}</span>
               </a>
             </div>
           ))}
@@ -215,10 +224,10 @@ const HomepageFurnituno = () => {
       <section>
         <h2>Hạng mục phổ biến</h2>
         <div className="categories-grid">
-          {PopularCategories.map((item) => (
+          {categories.map((item) => (
             <div className="category-card">
-              <img alt="" src={item.attachment} />
-              <span>{item.name}</span>
+              <img alt="" src={item.descriptionName} />
+              <span>{item.categoryName}</span>
             </div>
           ))}
         </div>

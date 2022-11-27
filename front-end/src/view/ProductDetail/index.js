@@ -30,6 +30,7 @@ import {
   getAllProduct,
   getProductById,
 } from "../../redux-toolkit/reducer/productSliceReducer";
+import { addToCart } from "../../redux-toolkit/reducer/cartSliceReducer";
 
 const ProductDetail = () => {
   const [detailProduct, setDetailProduct] = useState();
@@ -37,6 +38,7 @@ const ProductDetail = () => {
   const [sizeChoose, setSizeChoose] = useState();
   const [materialChoose, setMaterialChoose] = useState();
   const [productCard, setProductCard] = useState();
+  const [productVariation, setProductVariation] = useState({});
   const [visible, setVisible] = useState(false);
   const [sortReviews, setSortReviews] = useState(false);
   const [writeReview, setWriteReview] = useState(false);
@@ -47,6 +49,7 @@ const ProductDetail = () => {
   const product = useSelector((state) => state.product.product);
   const productsList = useSelector((state) => state.product.productList);
   const loadingPage = useSelector((state) => state.product.status);
+  const loadingAddCart = useSelector((state) => state.cart.status);
   const dispatch = useDispatch();
 
   const params = useParams();
@@ -82,7 +85,9 @@ const ProductDetail = () => {
                               position: "relative",
                             }
                       }
-                      onClick={() => setColorChoose(item.color)}
+                      onClick={() => {
+                        setColorChoose(item.color);
+                      }}
                       className="variation-item"
                     >
                       <img alt="" src={item.image} />
@@ -103,32 +108,23 @@ const ProductDetail = () => {
                       </span>
                     </div>
                   ))
-                : detailProduct[key].map((item) => (
-                    <div
-                      style={
-                        materialChoose === item || sizeChoose === item
-                          ? { borderColor: "#111" }
-                          : {}
-                      }
-                      onClick={() =>
-                        key === "size"
-                          ? setSizeChoose(item)
-                          : setMaterialChoose(item)
-                      }
-                      className="variation-item"
-                    >
-                      <span>{item}</span>
-                      {/* {item.subPrice > 0 && <span>+ $ {item.subPrice}</span>} */}
-                      <span>
-                        Còn{" "}
-                        {detailProduct?.stock
-                          ?.filter((st) => st.size === item)
-                          .reduce((prev, itm) => {
-                            return prev + itm.stock;
-                          }, 0)}
-                      </span>
-                    </div>
-                  ))}
+                : detailProduct.stock
+                    ?.filter((st) => st.color === colorChoose)
+                    .map((item) => (
+                      <div
+                        style={
+                          sizeChoose === item.size
+                            ? { borderColor: "#111" }
+                            : {}
+                        }
+                        onClick={() => setSizeChoose(item.size)}
+                        className="variation-item"
+                      >
+                        <span>{item.size}</span>
+                        {/* {item.subPrice > 0 && <span>+ $ {item.subPrice}</span>} */}
+                        <span>Còn {item.stock}</span>
+                      </div>
+                    ))}
             </div>
           </div>
         );
@@ -239,33 +235,53 @@ const ProductDetail = () => {
   };
 
   const addCartSubmit = () => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      setSuccess(true);
-    }, 2000);
+    dispatch(addToCart(productVariation.id));
   };
 
   useEffect(() => {
     if (params) {
-      // setDetailProduct(
-      //   productsList.find((item) => item.id.toString() === params.id)
-      // );
       dispatch(getProductById(params.id));
     }
   }, [params, dispatch]);
 
+  // set default state
   useEffect(() => {
     if (product) {
       setDetailProduct(product);
-      if (product?.size?.length > 0 && product?.color?.length > 0) {
-        setColorChoose(product?.color[0].color);
+      if (product?.stock?.length > 0) {
+        setColorChoose(product?.stock[0].color);
         setMaterialChoose(product?.material);
-        setSizeChoose(product?.size[0]);
+        setSizeChoose(product?.stock[0].size);
       }
     }
   }, [product]);
 
+  // choose color and size
+  useEffect(() => {
+    if (colorChoose && sizeChoose) {
+      console.log(
+        detailProduct?.stock?.find(
+          (st) => st.color === colorChoose && st.size === sizeChoose
+        )
+      );
+      setProductVariation(
+        detailProduct?.stock?.find(
+          (st) => st.color === colorChoose && st.size === sizeChoose
+        )
+      );
+    }
+  }, [colorChoose, sizeChoose]);
+
+  //choose color to render size
+  useEffect(() => {
+    if (colorChoose) {
+      setSizeChoose(
+        detailProduct?.stock?.filter((st) => st.color === colorChoose)[0].size
+      );
+    }
+  }, [colorChoose]);
+
+  // get product list
   useEffect(() => {
     dispatch(getAllProduct());
   }, [dispatch]);
@@ -282,8 +298,8 @@ const ProductDetail = () => {
             <div className="gallery-product-image">
               <div className="gallery-body">
                 <img alt="" src={detailProduct?.image} />
-                {detailProduct?.gallery?.map((item, index) => (
-                  <img key={index} alt="" src={item} />
+                {detailProduct?.gallery?.map((item) => (
+                  <img key={item.id} alt="" src={item.url} />
                 ))}
               </div>
               <button className="gallery-button">
@@ -409,14 +425,14 @@ const ProductDetail = () => {
                 <div className="add-to-bag">
                   <button onClick={() => addCartSubmit()}>
                     <span className="addCart-button">
-                      {!loading ? (
-                        !success ? (
-                          "Thêm vào giỏ hàng"
-                        ) : (
+                      {loadingAddCart !== "loading" ? (
+                        loadingAddCart === "success" ? (
                           <>
                             <CheckOutlined />
                             Thành công
                           </>
+                        ) : (
+                          "Thêm vào giỏ hàng"
                         )
                       ) : (
                         <Loading width="7px" height="7px" background="#fff" />
@@ -479,6 +495,7 @@ const ProductDetail = () => {
             setVisible={setVisible}
             children={renderChildren()}
             footer={key === "Đánh giá" && writeReview}
+            option={"Đánh giá"}
             setWriteReview={setWriteReview}
           />
         </>

@@ -22,7 +22,7 @@ const categorySliceReducer = createSlice({
 });
 
 export const getAllCategory = createAsyncThunk("category/getAll", async () => {
-  const res = await axios.get("category/findAllCategory");
+  const res = await axios.get("/category/findAllCategory");
   return res.data.data;
 });
 

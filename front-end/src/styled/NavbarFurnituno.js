@@ -92,6 +92,37 @@ const NavbarIKEA = styled.div`
           .header-search {
             width: 50%;
             padding-left: 40px;
+            .search-list {
+              a {
+                text-decoration: none;
+                color: black;
+                &:nth-child(1) {
+                  div {
+                    border-top-left-radius: 12px;
+                    border-top-right-radius: 12px;
+                  }
+                }
+                &:nth-last-child() {
+                  div {
+                    border-bottom-left-radius: 12px;
+                    border-bottom-right-radius: 12px;
+                  }
+                }
+                .search-card {
+                  cursor: pointer;
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                  padding: 10px 20px;
+                  &:hover {
+                    background: whitesmoke;
+                  }
+                  img {
+                    width: 50px;
+                  }
+                }
+              }
+            }
             .search-field {
               position: relative;
               flex: 1 1 auto;
