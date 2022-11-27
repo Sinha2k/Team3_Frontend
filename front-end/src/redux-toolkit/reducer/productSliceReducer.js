@@ -5,8 +5,10 @@ const productSliceReducer = createSlice({
   name: "products",
   initialState: {
     productList: [],
+    productListSearch: [],
     product: {},
     status: "idle",
+    statusSearch: "idle",
   },
   extraReducers: (builder) => {
     builder
@@ -27,6 +29,15 @@ const productSliceReducer = createSlice({
       .addCase(getProductById.fulfilled, (state, action) => {
         state.product = action.payload;
         state.status = "idle";
+      })
+
+      //search product list
+      .addCase(searchProduct.pending, (state, action) => {
+        state.statusSearch = "loading";
+      })
+      .addCase(searchProduct.fulfilled, (state, action) => {
+        state.productListSearch = action.payload;
+        state.statusSearch = "idle";
       });
   },
 });
@@ -43,6 +54,14 @@ export const getProductById = createAsyncThunk(
       "https://furniture2022.herokuapp.com/product/getproduct/" + id
     );
     return res.data;
+  }
+);
+
+export const searchProduct = createAsyncThunk(
+  "products/search",
+  async (keyword) => {
+    const res = await axios.get("/products/search/" + keyword);
+    return res.data.data;
   }
 );
 

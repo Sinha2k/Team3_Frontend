@@ -5,6 +5,13 @@ const cartStyle = styled.div`
   margin-right: 40px;
   margin-top: 6rem;
   display: flex;
+  .loading-page {
+    height: 70vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
   .cart-container {
     width: 55%;
     .cart-desc {

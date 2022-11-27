@@ -37,6 +37,7 @@ export const login = createAsyncThunk("users/login", async (user) => {
     // toast.success('Login successfully ^^')
     // window.location = "/furnituno";
     localStorage.setItem("firstLogin", true);
+    localStorage.setItem("token", res.data.data.token);
     // localStorage.setItem('refreshtoken',res.data.refreshToken)
     return res.data.data;
   } catch (err) {

@@ -1,6 +1,8 @@
 import React from "react";
 import styled from "styled-components";
-import { CloseOutlined, LeftOutlined } from "@ant-design/icons";
+import { CheckOutlined, CloseOutlined, LeftOutlined } from "@ant-design/icons";
+import Loading from "../Loading";
+import { useSelector } from "react-redux";
 
 const ModalStyle = styled.div`
   position: fixed;
@@ -109,12 +111,32 @@ const ModalStyle = styled.div`
         &:hover {
           background: rgba(51, 51, 51, 1);
         }
+
+        .checkout-button {
+          .anticon {
+            margin-right: 10px;
+            font-weight: 700;
+          }
+          div {
+            transform: translateY(-7px);
+          }
+        }
       }
     }
   }
 `;
 
-const Modal = ({ children, visible, setVisible, footer, setWriteReview }) => {
+const Modal = ({
+  children,
+  visible,
+  setVisible,
+  footer,
+  setWriteReview,
+  option,
+  handleSubmit,
+}) => {
+  const loadingCheckout = useSelector((state) => state.cart.statusCheckout);
+
   return (
     <ModalStyle
       style={
@@ -142,7 +164,26 @@ const Modal = ({ children, visible, setVisible, footer, setWriteReview }) => {
         <div className="modal-body">{children}</div>
         {footer && (
           <div className="modal-footer">
-            <button>Đăng nhập và đánh giá</button>
+            {option === "Đánh giá" ? (
+              <button>Đăng nhập và đánh giá</button>
+            ) : (
+              <button onClick={() => handleSubmit()}>
+                <span className="checkout-button">
+                  {loadingCheckout !== "loading" ? (
+                    loadingCheckout === "success" ? (
+                      <>
+                        <CheckOutlined />
+                        Đặt hàng thành công
+                      </>
+                    ) : (
+                      "Đặt hàng ngay"
+                    )
+                  ) : (
+                    <Loading width="7px" height="7px" background="#fff" />
+                  )}
+                </span>
+              </button>
+            )}
           </div>
         )}
       </aside>

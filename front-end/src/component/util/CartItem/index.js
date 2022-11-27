@@ -3,6 +3,11 @@ import styled from "styled-components";
 import { DownOutlined } from "@ant-design/icons";
 
 import cartimg from "../../../assets/svgIcons/cart.svg";
+import { useDispatch } from "react-redux";
+import {
+  removeFromCart,
+  updateCart,
+} from "../../../redux-toolkit/reducer/cartSliceReducer";
 
 const CartStyle = styled.div`
   border-bottom: 1px solid #dfdfdf;
@@ -14,9 +19,18 @@ const CartStyle = styled.div`
   .image-container {
     margin-right: 1rem;
     cursor: pointer;
+    position: relative;
     img {
       height: 8.75rem;
       min-width: 8.75rem;
+    }
+    span {
+      color: red;
+      left: 0;
+      font-size: 0.875rem;
+      top: 20px;
+      transform: rotate(-45deg);
+      position: absolute;
     }
   }
   .information-container {
@@ -152,39 +166,60 @@ const CartStyle = styled.div`
 `;
 
 const CartItem = ({ cart, type }) => {
+  const dispatch = useDispatch();
+
+  const handleOnChangeQuantity = (e, id) => {
+    e.target.disabled = true;
+    dispatch(
+      updateCart({
+        quantity: e.target.value,
+        product_variation_id: id,
+      })
+    );
+    setTimeout(() => {
+      e.target.disabled = false;
+    }, [2000]);
+  };
+
+  const handleRemoveCart = (id) => {
+    if (window.confirm("Bạn thực sự muốn xóa sản phẩm này khỏi giỏ hàng?")) {
+      dispatch(removeFromCart(id));
+    }
+  };
+
   return (
     <CartStyle>
       <div className="image-container">
-        <img alt="" src={cart?.product?.attachment} />
+        <img alt="" src={cart?.image} />
+        {cart?.canBuy === 0 && <span>Hết hàng</span>}
       </div>
       <div className="information-container">
         <ul className="product-information">
           <li>
-            <a href={`/furnituno/product/${cart.product.id}`}>
-              {cart.product.name}
-            </a>
+            <a href={`/furnituno/product/${cart?.product_id}`}>{cart?.name}</a>
           </li>
           <li>
-            <span>{cart.product.description}</span>
+            <span>
+              {cart?.description.length > 60
+                ? cart?.description.slice(0, 60) + "..."
+                : cart?.description}
+            </span>
           </li>
           <li>
-            <span>{cart.product.color}</span>
+            <span>{cart?.color}</span>
             <span>-</span>
-            <span>{cart.product.material}</span>
+            <span>{cart?.material}</span>
           </li>
-          <li>
-            {["Chiều dài", "Chiều rộng", "Chiều sâu", "Chiều cao"].map(
-              (item, index) => (
-                <span key={index}>
-                  {cart.product.size[item]} {index === 3 ? "cm" : "x"}
-                </span>
-              )
-            )}
-          </li>
+          <li>{<span>{cart?.size}</span>}</li>
         </ul>
         <div className="product-controls">
           <div className="control_quantity">
-            <select>
+            <select
+              onChange={(e) =>
+                handleOnChangeQuantity(e, cart?.product_variation_id)
+              }
+              defaultValue={cart?.quantity}
+            >
               <optgroup>
                 {[1, 2, 3, 4, 5, 6].map((item) => (
                   <option value={item} key={item}>
@@ -197,7 +232,9 @@ const CartItem = ({ cart, type }) => {
           </div>
           {type === "cart" ? (
             <>
-              <div>Xóa sản phẩm</div>
+              <div onClick={() => handleRemoveCart(cart?.product_variation_id)}>
+                Xóa sản phẩm
+              </div>
               <div>Thêm vào ưa thích</div>
             </>
           ) : (
@@ -209,7 +246,7 @@ const CartItem = ({ cart, type }) => {
             </>
           )}
         </div>
-        <div className="product-price">${cart.product.price}</div>
+        <div className="product-price">${cart?.price}</div>
       </div>
     </CartStyle>
   );
